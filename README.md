@@ -2,8 +2,6 @@
 
 SODA 데이터셋을 다양한 언어로 번역하는 도구입니다. 원본 [allenai/soda](https://huggingface.co/datasets/allenai/soda) 데이터셋을 LLM을 활용하여 원하는 언어로 번역하고 HuggingFace에 배포할 수 있습니다.
 
-**지원 언어**: Korean, Japanese, English, Chinese 등 모든 언어 (OpenRouter API 지원 범위 내)
-
 ## 라이센스
 
 이 프로젝트는 원본 SODA 데이터셋과 동일한 **CC-BY-4.0 (Creative Commons Attribution 4.0)** 라이센스를 따릅니다.
@@ -156,16 +154,6 @@ uv run python index.py resume --checkpoint ./temp/checkpoints/quick_run.json --m
 - ✅ **진행률 표시**: tqdm으로 실시간 진행 상황 모니터링
 - ✅ **빠른 실행**: `quick-run` 명령으로 번역부터 업로드까지 원스톱
 
-## 지원 모델
-
-OpenRouter API를 통해 다양한 모델 지원:
-
-- `qwen/qwen3-235b-a22b`
-- `qwen/qwen3-next-80b-a3b-instruct`
-- `google/gemini-2.5-flash-preview-09-2025`
-- `google/gemini-2.5-flash-lite-preview-09-2025`
-- `moonshotai/kimi-k2-0905`
-
 ## 개발
 
 ```bash
@@ -179,16 +167,7 @@ uv add package-name
 uv sync
 ```
 
-## 기여
-
-이 프로젝트는 CC-BY-4.0 라이센스를 따르며, 기여 시 다음 사항을 준수해야 합니다:
-
-1. 원본 SODA 데이터셋 출처 명시
-2. 번역 품질 유지
-3. 라이센스 호환성 확인
-
 ## 참조
 
 - 원본 데이터셋: https://huggingface.co/datasets/allenai/soda
 - OpenRouter API: https://openrouter.ai/
-- uv 문서: https://docs.astral.sh/uv/
