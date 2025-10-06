@@ -122,6 +122,21 @@ uv run python index.py estimate --model moonshotai/kimi-k2-0905 --samples 10
 uv run python index.py estimate --model moonshotai/kimi-k2-0905 --samples 10 --total-size 100000
 ```
 
+### 체크포인트에서 번역된 항목 추출 및 업로드
+
+번역 작업이 진행 중이거나 일부 완료된 경우, 이미 번역된 항목만 먼저 업로드할 수 있습니다:
+
+```bash
+# 1. 체크포인트에서 번역된 항목 추출
+uv run python index.py export-checkpoint --checkpoint ./temp/checkpoints/checkpoint.json --output ./temp/output/translated_partial.json
+
+# 2. 추출된 데이터 검증
+uv run python index.py validate --input ./temp/output/translated_partial.json
+
+# 3. HuggingFace에 업로드
+uv run python index.py upload --input ./temp/output/translated_partial.json --repo-name username/soda-kr-partial
+```
+
 ### 중단된 작업 재개
 
 ```bash
@@ -140,6 +155,7 @@ uv run python index.py resume --checkpoint ./temp/checkpoints/quick_run.json --m
 | `preview` | 데이터셋 샘플 확인 | `--samples` |
 | `translate` | 번역만 실행 | `--model`, `--max-samples`, `--chunk-size`, `--target-lang`, `--output` |
 | `estimate` | 비용 및 시간 추정 | `--model`, `--samples`, `--total-size` |
+| `export-checkpoint` | 체크포인트에서 번역된 항목 추출 | `--checkpoint`, `--output` |
 | `validate` | 번역 결과 검증 | `--input` |
 | `upload` | HuggingFace 업로드 | `--input`, `--repo-name`, `--private` |
 | `resume` | 중단된 작업 재개 | `--checkpoint`, `--model`, `--chunk-size`, `--target-lang` |

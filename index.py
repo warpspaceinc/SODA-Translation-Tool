@@ -121,6 +121,71 @@ def estimate(model, samples, total_size):
 
 
 @cli.command()
+@click.option("--checkpoint", required=True, help="Checkpoint file to export from")
+@click.option("--output", required=True, help="Output JSON file path")
+def export_checkpoint(checkpoint, output):
+    """체크포인트에서 번역된 항목을 JSON으로 추출"""
+    click.echo(f"Exporting from checkpoint: {checkpoint}")
+
+    # 체크포인트 로드
+    try:
+        with open(checkpoint, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+    except json.JSONDecodeError as e:
+        click.echo(f"[ERROR] Checkpoint file is corrupted at {e}")
+        click.echo(f"Attempting to recover partial data...")
+
+        # 손상된 JSON 복구 시도
+        with open(checkpoint, 'r', encoding='utf-8') as f:
+            content = f.read()
+
+        # items 배열 추출 시도
+        import re
+        match = re.search(r'"items"\s*:\s*\[(.*)\]', content, re.DOTALL)
+        if not match:
+            click.echo("[ERROR] Failed to recover data")
+            return
+
+        # 마지막 완전한 항목까지만 추출
+        items_str = match.group(1)
+        # 마지막 완전한 } 찾기
+        last_complete = items_str.rfind('},')
+        if last_complete == -1:
+            last_complete = items_str.rfind('}')
+
+        if last_complete == -1:
+            click.echo("[ERROR] No valid items found")
+            return
+
+        items_str = items_str[:last_complete+1]
+        try:
+            items = json.loads('[' + items_str + ']')
+            click.echo(f"[OK] Recovered {len(items)} items")
+        except:
+            click.echo("[ERROR] Failed to parse recovered items")
+            return
+    else:
+        items = data.get('items', [])
+        click.echo(f"[OK] Loaded {len(items)} items from checkpoint")
+
+    if not items:
+        click.echo("[ERROR] No items to export")
+        return
+
+    # 출력 디렉토리 생성
+    os.makedirs(os.path.dirname(output) or ".", exist_ok=True)
+
+    # JSON 저장
+    with open(output, 'w', encoding='utf-8') as f:
+        json.dump(items, f, ensure_ascii=False, indent=2)
+
+    click.echo(f"\n[OK] Exported {len(items)} items to: {output}")
+    click.echo(f"\nNext steps:")
+    click.echo(f"  1. Validate: uv run python index.py validate --input {output}")
+    click.echo(f"  2. Upload: uv run python index.py upload --input {output} --repo-name YOUR_REPO")
+
+
+@cli.command()
 @click.option("--input", "input_path", required=True, help="Input JSON file to validate")
 def validate(input_path):
     """번역 결과 검증"""
