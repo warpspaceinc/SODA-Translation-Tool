@@ -1,0 +1,6 @@
+temp
+.venv
+.claude
+example.py
+**/*.pyc
+.env
